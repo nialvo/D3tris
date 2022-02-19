@@ -1,0 +1,26 @@
+.dimensionTitle, .dimensionValue{
+    font-size:50px
+}
+
+
+
+canvas{
+	display: block;
+  	
+	
+}
+
+
+
+#screen{
+    position:relative;
+}
+
+
+
+#aug{
+    position:absolute;
+    left:0;
+    top:0;
+   
+}
