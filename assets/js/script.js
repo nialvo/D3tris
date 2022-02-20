@@ -1,3 +1,14 @@
+//displays
+
+
+const xEl = document.getElementById("x");
+const yEl = document.getElementById("y");
+const zEl = document.getElementById("z");
+const iEl = document.getElementById("i");
+const jEl = document.getElementById("j");
+const kEl = document.getElementById("k");
+
+
 //set up canvas
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -8,7 +19,7 @@ let midX=Math.round(wid/2);
 let midY=Math.round(hei/2);
 canvas.setAttribute("width",wid);
 canvas.setAttribute("height",hei);
-let h;//holder for switching
+
 
 
 //controls
@@ -19,54 +30,113 @@ rY.addEventListener("click",RY);
 const rZ=document.getElementById("rotX");
 rZ.addEventListener("click",RZ);
 
+let x=0;
+let y=0;
+let z=50;//position of center
+
+xEl.textContent=x;
+yEl.textContent=y;
+zEl.textContent=z;
+
+let xinc=10;
+let yinc=10;
+let zinc=10;
+
+document.onkeydown = logKey;
+
+function logKey(e){
+    if (e.code == "Numpad8"){
+        z+= zinc;
+        zEl.textContent=z;
+    }
+    else if (e.code == "Numpad2"){
+        z-= zinc;
+        zEl.textContent=z;
+    }
+    else if (e.code == "Numpad4"){
+        x-= xinc;
+        xEl.textContent=x;
+    }
+    else if (e.code == "Numpad6"){
+        x+= xinc;
+        xEl.textContent=x;
+    }
+
+
+}
+
+//displays
+
+
+
 //create D3tronimos
 
 /*
-omfg
 for performance' sake we are mostly using L.flat arrays:
 a square with vertex coordinates v0=[x0,y0,z0] v1=[x1,y1,z1] v2=[x2,y2,z2] v3=[x3,y3,z3]
 is stored as s=[x0,y0,z0,x1,y1,z1,x2,y2,z2,x3,y3,z3].
-By convention, for clarity, we refer to the elements as iL.f they were in a matrix:
-for example, to access the y coordinate oL.f the L.first (0th) vertex, we write s[0*3+1].
-Alternately, iL.f iterating through the points in a loop, 
-for example, to access the y coordinate oL.f each vertex, we write s[i+1] in a loop that increments i by 3.
+By convention, for clarity, we refer to the elements as if they were in a matrix:
+for example, to access the y coordinate of the first (0th) vertex, we write s[0*3+1].
+Athisernately, if iterating through the points in a loop, 
+for example, to access the y coordinate of each vertex, we write s[i+1] in a loop that increments i by 3.
 */
-const w = 30;//size increment oL.f blocks (halL.f the width oL.f the smallest side)
-const scr = 100;//distance between viewer and screen
 
-//L-shape //////change L.f and b so that center is at actual center not top leL.ft L.front corner
+
+const w = 30;//size increment oL.f blocks (half the width of the smallest side)
+const scr = 400;//distance between viewer and screen
+const al = .3//alpha of block sides
+
+//L-shape
 class LT {
     constructor(){
-    this.f=[-2*w,-3*w,0,0,-3*w,0,0,w,0,2*w,w,0,2*w,3*w,0,-2*w,3*w,0],//L.front (in deL.fault position)
-    this.b=[-2*w,-3*w,2*w,0,-3*w,2*w,0,w,2*w,2*w,w,2*w,2*w,3*w,2*w,-2*w,3*w,2*w],//back
-    this.s0=[this.f[0*3+0],this.f[0*3+1],this.f[0*3+2],this.f[1*3+0],this.f[1*3+1],this.f[1*3+2],this.b[1*3+0],this.b[1*3+1],this.b[1*3+2],this.b[0*3+0],this.b[0*3+1],this.b[0*3+2]],//sides
-    this.s1=[this.f[1*3+0],this.f[1*3+1],this.f[1*3+2],this.f[2*3+0],this.f[2*3+1],this.f[2*3+2],this.b[2*3+0],this.b[2*3+1],this.b[2*3+2],this.b[1*3+0],this.b[1*3+1],this.b[1*3+2]],
-    this.s2=[this.f[2*3+0],this.f[2*3+1],this.f[2*3+2],this.f[3*3+0],this.f[3*3+1],this.f[3*3+2],this.b[3*3+0],this.b[3*3+1],this.b[3*3+2],this.b[2*3+0],this.b[2*3+1],this.b[2*3+2]],
-    this.s3=[this.f[3*3+0],this.f[3*3+1],this.f[3*3+2],this.f[4*3+0],this.f[4*3+1],this.f[4*3+2],this.b[4*3+0],this.b[4*3+1],this.b[4*3+2],this.b[3*3+0],this.b[3*3+1],this.b[3*3+2]],
-    this.s4=[this.f[4*3+0],this.f[4*3+1],this.f[4*3+2],this.f[5*3+0],this.f[5*3+1],this.f[5*3+2],this.b[5*3+0],this.b[5*3+1],this.b[5*3+2],this.b[4*3+0],this.b[4*3+1],this.b[4*3+2]],
-    this.s5=[this.f[5*3+0],this.f[5*3+1],this.f[5*3+2],this.f[0*3+0],this.f[0*3+1],this.f[0*3+2],this.b[0*3+0],this.b[0*3+1],this.b[0*3+2],this.b[5*3+0],this.b[5*3+1],this.b[5*3+2]],
-    this.colorf="rgba(255,0,0, .5)",
-    this.colorb="rgba(210,45,0, .5)",
-    this.color0="rgba(210,0,45, .5)",
-    this.color1="rgba(180,20,20, .5)",
-    this.color2="rgba(160,42,69, .5)",
-    this.color3="rgba(120,53,85, .5)",
-    this.color4="rgba(208,108,55, .5)",
-    this.color5="rgba(155,85,100, .5)"
+        this.f=[-2*w,-3*w,-w,0,-3*w,-w,0,w,-w,2*w,w,-w,2*w,3*w,-w,-2*w,3*w,-w],//front (in default position)
+        this.b=[-2*w,-3*w,w,0,-3*w,w,0,w,w,2*w,w,w,2*w,3*w,w,-2*w,3*w,w],//back
+        this.colorf="rgba(245,0,0,"+al+")",
+        this.colorb="rgba(220,45,0,"+al+")",
+        this.color0="rgba(230,0,45,"+al+")",
+        this.color1="rgba(210,20,20,"+al+")",
+        this.color2="rgba(200,42,69,"+al+")",
+        this.color3="rgba(190,53,85, "+al+")",
+        this.color4="rgba(208,108,55,"+al+")",
+        this.color5="rgba(235,85,100,"+al+")"
+    }
+    static s0(a){return [a.f[0*3+0],a.f[0*3+1],a.f[0*3+2],a.f[1*3+0],a.f[1*3+1],a.f[1*3+2],a.b[1*3+0],a.b[1*3+1],a.b[1*3+2],a.b[0*3+0],a.b[0*3+1],a.b[0*3+2]]}//sides
+    static s1(a){return [a.f[1*3+0],a.f[1*3+1],a.f[1*3+2],a.f[2*3+0],a.f[2*3+1],a.f[2*3+2],a.b[2*3+0],a.b[2*3+1],a.b[2*3+2],a.b[1*3+0],a.b[1*3+1],a.b[1*3+2]]}
+    static s2(a){return [a.f[2*3+0],a.f[2*3+1],a.f[2*3+2],a.f[3*3+0],a.f[3*3+1],a.f[3*3+2],a.b[3*3+0],a.b[3*3+1],a.b[3*3+2],a.b[2*3+0],a.b[2*3+1],a.b[2*3+2]]}
+    static s3(a){return [a.f[3*3+0],a.f[3*3+1],a.f[3*3+2],a.f[4*3+0],a.f[4*3+1],a.f[4*3+2],a.b[4*3+0],a.b[4*3+1],a.b[4*3+2],a.b[3*3+0],a.b[3*3+1],a.b[3*3+2]]}
+    static s4(a){return [a.f[4*3+0],a.f[4*3+1],a.f[4*3+2],a.f[5*3+0],a.f[5*3+1],a.f[5*3+2],a.b[5*3+0],a.b[5*3+1],a.b[5*3+2],a.b[4*3+0],a.b[4*3+1],a.b[4*3+2]]}
+    static s5(a){return [a.f[5*3+0],a.f[5*3+1],a.f[5*3+2],a.f[0*3+0],a.f[0*3+1],a.f[0*3+2],a.b[0*3+0],a.b[0*3+1],a.b[0*3+2],a.b[5*3+0],a.b[5*3+1],a.b[5*3+2]]}
+    static M(a){return Math.max(a.f[0*3+2],a.f[1*3+2],a.f[2*3+2],a.f[3*3+2],a.f[4*3+2],a.f[5*3+2],a.b[0*3+2],a.b[1*3+2],a.b[2*3+2],a.b[3*3+2],a.b[4*3+2],a.b[5*3+2])}
+    static Mf(a){return Math.max(a.f[0*3+2],a.f[1*3+2],a.f[2*3+2],a.f[3*3+2],a.f[4*3+2],a.f[5*3+2])==this.M(a)}
+    static Mb(a){return Math.max(a.b[0*3+2],a.b[1*3+2],a.b[2*3+2],a.b[3*3+2],a.b[4*3+2],a.b[5*3+2])==this.M(a)}
+    static M0(a){return Math.max(a.f[0*3+2],a.f[1*3+2],a.b[1*3+2],a.b[0*3+2])==this.M(a)}
+    static M1(a){return Math.max(a.f[1*3+2],a.f[2*3+2],a.b[2*3+2],a.b[1*3+2])==this.M(a)}
+    static M2(a){return Math.max(a.f[2*3+2],a.f[3*3+2],a.b[3*3+2],a.b[2*3+2])==this.M(a)}
+    static M3(a){return Math.max(a.f[3*3+2],a.f[4*3+2],a.b[4*3+2],a.b[3*3+2])==this.M(a)}
+    static M4(a){return Math.max(a.f[4*3+2],a.f[5*3+2],a.b[5*3+2],a.b[4*3+2])==this.M(a)}
+    static M5(a){return Math.max(a.f[5*3+2],a.f[0*3+2],a.b[0*3+2],a.b[5*3+2])==this.M(a)}
+    static draw(L){
+        if(this.Mf(L))polygon(L.f,L.colorf);
+        if(this.Mb(L))polygon(L.b,L.colorb);
+        if(this.M0(L))polygon(this.s0(L),L.color0);
+        if(this.M1(L))polygon(this.s1(L),L.color1);
+        if(this.M2(L))polygon(this.s2(L),L.color2);
+        if(this.M3(L))polygon(this.s3(L),L.color3);
+        if(this.M4(L))polygon(this.s4(L),L.color4);
+        if(this.M5(L))polygon(this.s5(L),L.color5);
+        if(!this.M0(L))polygon(this.s0(L),L.color0);
+        if(!this.M1(L))polygon(this.s1(L),L.color1);
+        if(!this.M2(L))polygon(this.s2(L),L.color2);
+        if(!this.M3(L))polygon(this.s3(L),L.color3);
+        if(!this.M4(L))polygon(this.s4(L),L.color4);
+        if(!this.M5(L))polygon(this.s5(L),L.color5);
+        if(!this.Mf(L))polygon(L.f,L.colorf);
+        if(!this.Mb(L))polygon(L.b,L.colorb);
     }
 }
-/*const L = {
-    f:[-2*w,-3*w,0,0,-3*w,0,0,w,0,2*w,w,0,2*w,3*w,0,-2*w,3*w,0],//L.front (in deL.fault position)
-    b:[-2*w,-3*w,2*w,0,-3*w,2*w,0,w,2*w,2*w,w,2*w,2*w,3*w,2*w,-2*w,3*w,2*w],//back
-    s0:function (){ return [this.f[0*3+0],this.f[0*3+1],this.f[0*3+2],this.f[1*3+0],this.f[1*3+1],this.f[1*3+2],this.b[1*3+0],this.b[1*3+1],this.b[1*3+2],this.b[0*3+0],this.b[0*3+1],this.b[0*3+2]]},//sides
-    s1:function (){ return [this.f[1*3+0],this.f[1*3+1],this.f[1*3+2],this.f[2*3+0],this.f[2*3+1],this.f[2*3+2],this.b[2*3+0],this.b[2*3+1],this.b[2*3+2],this.b[1*3+0],this.b[1*3+1],this.b[1*3+2]]},
-    s2:function (){ return [this.f[2*3+0],this.f[2*3+1],this.f[2*3+2],this.f[3*3+0],this.f[3*3+1],this.f[3*3+2],this.b[3*3+0],this.b[3*3+1],this.b[3*3+2],this.b[2*3+0],this.b[2*3+1],this.b[2*3+2]]},
-    s3:function (){ return [this.f[3*3+0],this.f[3*3+1],this.f[3*3+2],this.f[4*3+0],this.f[4*3+1],this.f[4*3+2],this.b[4*3+0],this.b[4*3+1],this.b[4*3+2],this.b[3*3+0],this.b[3*3+1],this.b[3*3+2]]},
-    s4:function (){ return [this.f[4*3+0],this.f[4*3+1],this.f[4*3+2],this.f[5*3+0],this.f[5*3+1],this.f[5*3+2],this.b[5*3+0],this.b[5*3+1],this.b[5*3+2],this.b[4*3+0],this.b[4*3+1],this.b[4*3+2]]},
-    s5:function (){ return [this.f[5*3+0],this.f[5*3+1],this.f[5*3+2],this.f[0*3+0],this.f[0*3+1],this.f[0*3+2],this.b[0*3+0],this.b[0*3+1],this.b[0*3+2],this.b[5*3+0],this.b[5*3+1],this.b[5*3+2]]},
-    color:"rgba(255,0,0,.5)"
-    
-}*/
+
+
+
 function RX(){
     console.log("say nothing")
 }
@@ -77,52 +147,94 @@ function RZ(){
     console.log("say nothing")
 }
 
-//we only rotate the L.front and back, the sides are deL.fined in terms oL.f the L.front and back
+//we only rotate the front and back, the sides are defined in terms of the front and back
 function rotateX(A){
     for(let i=0; i<A.length;i+=3){
-        h = A[i*3+1];
-        A[i*3+1]=-A[i*3+2];
-        A[i*3+2]=h;
+        let h = A[i+1];
+        A[i+1]=-A[i+2];
+        A[i+2]=h;
     }
 }
 function rotateY(A){
     for(let i=0; i<A.length;i+=3){
-        h = A[i*3+0];
-        A[i*3+0]=-A[i*3+2];
-        A[i*3+2]=h;
+        let h = A[i+0];
+        A[i+0]=-A[i+2];
+        A[i+2]=h;
     }
 }
 
 function rotateZ(A){
     for(let i=0; i<A.length;i+=3){
-        h = A[i*3+0];
-        A[i*3+0]=-A[i*3+1];
-        A[i*3+1]=h;
+        let h = A[i+0];
+        A[i+0]=-A[i+1];
+        A[i+1]=h;
+    }
+}
+function rotateXV(A,frac){
+    let ct = Math.cos(Math.PI/frac);
+    let st = Math.sin(Math.PI/frac);
+    for(let i=0; i<A.length;i+=3){
+        let h = A[i+1];
+        let k = A[i+2];
+        A[i+1]=h*ct-k*st;
+        A[i+2]=h*st+k*ct;
+    }
+}
+function rotateYV(A,frac){
+    let ct = Math.cos(Math.PI/frac);
+    let st = Math.sin(Math.PI/frac);
+    for(let i=0; i<A.length;i+=3){
+        let h = A[i+0];
+        let k = A[i+2];
+        A[i+0]=h*ct-k*st;
+        A[i+2]=h*st+k*ct;
     }
 }
 
 
+function rotateZV(A,frac){
+    let ct = Math.cos(Math.PI/frac);
+    let st = Math.sin(Math.PI/frac);
+    for(let i=0; i<A.length;i+=3){
+        let h = A[i+0];
+        let k = A[i+1];
+        A[i+0]=h*ct-k*st;
+        A[i+1]=h*st+k*ct;
+    }
+}
+
+//put position in here//////////////////////////////////////////////////////////////////////////////////////////////////////
+//move to (x+X)/((z+Z+sc)/scr) etc.
+
 function polygon(A,color){
     
     ctx.fillStyle = color;
+    ctx.strokeStyle = "white";
     ctx.beginPath();
-    ctx.moveTo(A[0*3+0]/((A[0*3+2]+scr)/scr)+midX,A[0*3+1]/((A[0*3+2]+scr)/scr)+midY);
-    for(let i=3; i<A.length; i+=3) ctx.lineTo(A[i+0]/((A[i+2]+scr)/scr)+midX,A[i+1]/((A[i+2]+scr)/scr)+midY);
+    ctx.moveTo((A[0*3+0]+x)/((A[0*3+2]+z+scr)/scr)+midX,(A[0*3+1])/((A[0*3+2]+z+scr)/scr)+midY);
+    for(let i=3; i<A.length; i+=3) ctx.lineTo((A[i+0]+x)/((A[i+2]+z+scr)/scr)+midX,(A[i+1])/((A[i+2]+z+scr)/scr)+midY);
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
 }
 
 ////////////////////////////////////////////
 
-let L = new LT;
-polygon(L.f,L.colorf);
-polygon(L.b,L.colorb);
-polygon(L.s0,L.color0);
-polygon(L.s1,L.color1);
-polygon(L.s2,L.color2);
-polygon(L.s3,L.color3);
-polygon(L.s4,L.color4);
-polygon(L.s5,L.color5);
+let l = new LT;
+function WW(){
+    ctx.clearRect(0,0,wid,hei)
+    rotateXV(l.f,50);
+    rotateXV(l.b,50);
+    rotateYV(l.f,70);
+    rotateYV(l.b,70);
+    rotateZV(l.f,90);
+    rotateZV(l.b,90);
+    LT.draw(l)
+}
+
+setInterval(WW,10);
+
+
 
 
 
