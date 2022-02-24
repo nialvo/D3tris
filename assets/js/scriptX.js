@@ -144,5 +144,59 @@ setInterval(loop,20);
 
 
 
+/* complete crap
+    static M(a){return Math.max(a.f[0*3+2],a.f[1*3+2],a.f[2*3+2],a.f[3*3+2],a.f[4*3+2],a.f[5*3+2],a.b[0*3+2],a.b[1*3+2],a.b[2*3+2],a.b[3*3+2],a.b[4*3+2],a.b[5*3+2])}
+    static Mf(a){return Math.max(a.f[0*3+2],a.f[1*3+2],a.f[2*3+2],a.f[3*3+2],a.f[4*3+2],a.f[5*3+2])==this.M(a)}
+    static Mb(a){return Math.max(a.b[0*3+2],a.b[1*3+2],a.b[2*3+2],a.b[3*3+2],a.b[4*3+2],a.b[5*3+2])==this.M(a)}
+    static M0(a){return Math.max(a.f[0*3+2],a.f[1*3+2],a.b[1*3+2],a.b[0*3+2])==this.M(a)}
+    static M1(a){return Math.max(a.f[1*3+2],a.f[2*3+2],a.b[2*3+2],a.b[1*3+2])==this.M(a)}
+    static M2(a){return Math.max(a.f[2*3+2],a.f[3*3+2],a.b[3*3+2],a.b[2*3+2])==this.M(a)}
+    static M3(a){return Math.max(a.f[3*3+2],a.f[4*3+2],a.b[4*3+2],a.b[3*3+2])==this.M(a)}
+    static M4(a){return Math.max(a.f[4*3+2],a.f[5*3+2],a.b[5*3+2],a.b[4*3+2])==this.M(a)}
+    static M5(a){return Math.max(a.f[5*3+2],a.f[0*3+2],a.b[0*3+2],a.b[5*3+2])==this.M(a)}
+    static draw(L){
+        if(this.Mf(L))polygon(L.f,L.colorf);
+        if(this.Mb(L))polygon(L.b,L.colorb);
+        if(this.M0(L))polygon(this.s0(L),L.color0);
+        if(this.M1(L))polygon(this.s1(L),L.color1);
+        if(this.M2(L))polygon(this.s2(L),L.color2);
+        if(this.M3(L))polygon(this.s3(L),L.color3);
+        if(this.M4(L))polygon(this.s4(L),L.color4);
+        if(this.M5(L))polygon(this.s5(L),L.color5);
+        if(!this.M0(L))polygon(this.s0(L),L.color0);
+        if(!this.M1(L))polygon(this.s1(L),L.color1);
+        if(!this.M2(L))polygon(this.s2(L),L.color2);
+        if(!this.M3(L))polygon(this.s3(L),L.color3);
+        if(!this.M4(L))polygon(this.s4(L),L.color4);
+        if(!this.M5(L))polygon(this.s5(L),L.color5);
+        if(!this.Mf(L))polygon(L.f,L.colorf);
+        if(!this.Mb(L))polygon(L.b,L.colorb);
+        
+    }
+}
+*/
 
 
+/*const rX=document.getElementById("rotX");
+rX.addEventListener("click",RX);
+const rY=document.getElementById("rotX");
+rY.addEventListener("click",RY);
+const rZ=document.getElementById("rotX");
+rZ.addEventListener("click",RZ);
+
+
+
+
+function RX(){
+    console.log("say nothing")
+}
+function RY(){
+    console.log("say nothing")
+}
+function RZ(){
+    console.log("say nothing")
+}
+*/
+
+
+//<img id="background" src="./assets/images/space.png"></img>

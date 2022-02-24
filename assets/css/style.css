@@ -3,24 +3,48 @@
 }
 
 
-
-canvas{
-	display: block;
-  	
-	
+#indic{
+    display:none;
+    /*justify-content:space-evenly;*/
 }
 
 
 
-#screen{
+#scree{
     position:relative;
 }
 
-
-
-#aug{
+#canvas{
     position:absolute;
     left:0;
     top:0;
-   
+    z-index:3;
+}
+#background{
+    background-color:"black";
+    position:absolute;
+    left:0;
+    top:0;
+    z-index:1;
+}
+
+#rotX{
+    position:absolute;
+    left:20px;
+    bottom:10px;
+    z-index:4;
+}
+
+#rotY{
+    position:absolute;
+    left:30%;
+    bottom:10%;
+    z-index:4;
+}
+
+#rotZ{
+    position:absolute;
+    left:40%;
+    bottom:10%;
+    z-index:4;
 }
