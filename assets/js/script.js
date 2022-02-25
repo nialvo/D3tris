@@ -118,23 +118,25 @@ function upkey(e){
 
 //shapes
 
-const w = 20;//size increment of blocks (half the width of the smallest side)
+const w = 40;//size increment of blocks (half the width of the smallest side)
 const scr = 1.5*hei;//distance between viewer and screen
-console.log(scr);
 const al = .4//alpha of block sides
 
 let highl="rgba(20,20,20,1)"
 
+//draw grid
 bck.strokeStyle="rgb(150,150,150)";
-for (let i = -4; i<5; i++){
-    bck.moveTo(((i*2*w)*scr)/(scr+10-4*2*w)+midX,(.7*hei*scr)/(scr+10-4*2*w)+4*w);
-    bck.lineTo(((i*2*w)*scr)/(scr+10+4*2*w)+midX,(.7*hei*scr)/(scr+10+4*2*w)+4*w);
+
+
+for (let i = -3; i<4; i++){
+    bck.moveTo(((i*2*w)*scr)/(scr+10-3*2*w)+midX,(.62*hei*scr)/(scr+10-3*2*w)+4*w);
+    bck.lineTo(((i*2*w)*scr)/(scr+10+3*2*w)+midX,(.62*hei*scr)/(scr+10+3*2*w)+4*w);
     bck.stroke();
     bck.closePath();
 }
-for (let i = -4; i<5; i++){
-    bck.moveTo(((-8*w)*scr)/(scr+10+i*2*w)+midX,(.7*hei*scr)/(scr+10+i*2*w)+4*w);
-    bck.lineTo(((8*w)*scr)/(scr+10+i*2*w)+midX,(.7*hei*scr)/(scr+10+i*2*w)+4*w);
+for (let i = -3; i<4; i++){
+    bck.moveTo(((-6*w)*scr)/(scr+10+i*2*w)+midX,(.62*hei*scr)/(scr+10+i*2*w)+4*w);
+    bck.lineTo(((6*w)*scr)/(scr+10+i*2*w)+midX,(.62*hei*scr)/(scr+10+i*2*w)+4*w);
     bck.stroke();
     bck.closePath();
 }
@@ -163,18 +165,24 @@ class LT {
     static s3(a){return [a.f[3*3+0],a.f[3*3+1],a.f[3*3+2],a.f[4*3+0],a.f[4*3+1],a.f[4*3+2],a.b[4*3+0],a.b[4*3+1],a.b[4*3+2],a.b[3*3+0],a.b[3*3+1],a.b[3*3+2]]}
     static s4(a){return [a.f[4*3+0],a.f[4*3+1],a.f[4*3+2],a.f[5*3+0],a.f[5*3+1],a.f[5*3+2],a.b[5*3+0],a.b[5*3+1],a.b[5*3+2],a.b[4*3+0],a.b[4*3+1],a.b[4*3+2]]}
     static s5(a){return [a.f[5*3+0],a.f[5*3+1],a.f[5*3+2],a.f[0*3+0],a.f[0*3+1],a.f[0*3+2],a.b[0*3+0],a.b[0*3+1],a.b[0*3+2],a.b[5*3+0],a.b[5*3+1],a.b[5*3+2]]}
+    static lowest(a) {return Math.max(a.f[0*3+1],a.f[1*3+1],a.f[2*3+1],a.f[3*3+1],a.f[4*3+1],a.f[5*3+1],a.b[0*3+1],a.b[1*3+1],a.b[2*3+1],a.b[3*3+1],a.b[4*3+1],a.b[5*3+1]);}
+    static contact(a){
+        if (Math.abs(this.lowest(a)-a.f[0*3+1])<tol&&Math.abs(this.lowest(a)-a.b[1*3+1])<tol)return this.s2(a);
+        else if (Math.abs(this.lowest(a)-a.f[3*3+1])<tol&&Math.abs(this.lowest(a)-a.b[4*3+1])<tol)return this.s1(a);
+        else return 0;    
+    }
     static draw(a){
-        let MXXX=Math.min(a.f[0*3+2],a.f[1*3+2],a.f[2*3+2],a.f[3*3+2],a.f[4*3+2],a.f[5*3+2],a.b[0*3+2],a.b[1*3+2],a.b[2*3+2],a.b[3*3+2],a.b[4*3+2],a.b[5*3+2]);
-        let M=Math.max(a.f[0*3+1],a.f[1*3+1],a.f[2*3+1],a.f[3*3+1],a.f[4*3+1],a.f[5*3+1],a.b[0*3+1],a.b[1*3+1],a.b[2*3+1],a.b[3*3+1],a.b[4*3+1],a.b[5*3+1]);
-        
-        polygon(a.f,a.colorf,a.x,a.y,a.z,M);
-        polygon(a.b,a.colorb,a.x,a.y,a.z,M);
-        polygon(this.s0(a),a.color0,a.x,a.y,a.z,M);
-        polygon(this.s1(a),a.color1,a.x,a.y,a.z,M);
-        polygon(this.s2(a),a.color2,a.x,a.y,a.z,M);
-        polygon(this.s3(a),a.color3,a.x,a.y,a.z,M);
-        polygon(this.s4(a),a.color4,a.x,a.y,a.z,M);
-        polygon(this.s5(a),a.color5,a.x,a.y,a.z,M);   
+        //let MXXX=Math.min(a.f[0*3+2],a.f[1*3+2],a.f[2*3+2],a.f[3*3+2],a.f[4*3+2],a.f[5*3+2],a.b[0*3+2],a.b[1*3+2],a.b[2*3+2],a.b[3*3+2],a.b[4*3+2],a.b[5*3+2]);
+        let M=this.lowest(a);
+        let c= this.contact(a);
+        polygon(a.f,a.colorf,a.x,a.y,a.z,M,c);
+        polygon(a.b,a.colorb,a.x,a.y,a.z,M,c);
+        polygon(this.s0(a),a.color0,a.x,a.y,a.z,M,c);
+        polygon(this.s1(a),a.color1,a.x,a.y,a.z,M,c);
+        polygon(this.s2(a),a.color2,a.x,a.y,a.z,M,c);
+        polygon(this.s3(a),a.color3,a.x,a.y,a.z,M,c);
+        polygon(this.s4(a),a.color4,a.x,a.y,a.z,M,c);
+        polygon(this.s5(a),a.color5,a.x,a.y,a.z,M,c);   
     }  
 }
 
@@ -236,11 +244,32 @@ function rotateZV(A,frac=50){
 }
 
 
-function polygon(A,color,x,y,z,M){
+function polygon(A,color,x,y,z,M,c){
+    ctx.strokeStyle = "rgba(0,0,0,0)";
     let ff=0;
     for (let i =0; i<A.length; i+=3)if(Math.abs(A[i+1]-M)>tol)ff=1; 
-    if (ff==0)ctx.strokeStyle = highl;
-    else ctx.strokeStyle = "rgba(0,0,0,0)";
+    if (ff==0){
+        if(c!=0){
+            ctx.strokeStyle = highl;
+            ctx.beginPath();
+            ctx.moveTo(((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+4*w);
+            for(let i=3; i<c.length; i+=3)ctx.lineTo(((c[i+0]+x)*scr)/(c[i+2]+z)+midX,(.62*hei*scr)/(c[i+2]+z)+4*w);
+            ctx.lineTo( ((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+4*w);
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        ctx.strokeStyle = highl;
+        ctx.beginPath();
+        ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+4*w);
+        for(let i=3; i<A.length; i+=3)ctx.lineTo(((A[i+0]+x)*scr)/(A[i+2]+z)+midX,(.62*hei*scr)/(A[i+2]+z)+4*w);
+        ctx.lineTo( ((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+4*w);
+        ctx.stroke();
+        ctx.closePath();
+    }
+    ff=0;
+    for (let i =0; i<A.length; i+=3)if (A[i]!=c[i])ff=1; 
+    if (ff==0) ctx.strokeStyle = highl; 
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,((A[0*3+1]+y)*scr)/(A[0*3+2]+z)+4*w);
