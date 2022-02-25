@@ -61,7 +61,11 @@ const con={
     KeyC : false,
     xr : 0,
     yr : 0,
-    zr : 0
+    zr : 0,
+    xt : 0,////////////////////////////////////////////////use this to make movement incremental/////////////////////////////////////
+    yt : 0,
+    zt : 0
+    
 
 }
 function resp(AA,A){
@@ -118,7 +122,7 @@ function upkey(e){
 
 //shapes
 
-const w = 40;//size increment of blocks (half the width of the smallest side)
+const w = 80;//size increment of blocks 
 const scr = 1.5*hei;//distance between viewer and screen
 const al = .4//alpha of block sides
 
@@ -129,14 +133,14 @@ bck.strokeStyle="rgb(150,150,150)";
 
 
 for (let i = -3; i<4; i++){
-    bck.moveTo(((i*2*w)*scr)/(scr+10-3*2*w)+midX,(.62*hei*scr)/(scr+10-3*2*w)+4*w);
-    bck.lineTo(((i*2*w)*scr)/(scr+10+3*2*w)+midX,(.62*hei*scr)/(scr+10+3*2*w)+4*w);
+    bck.moveTo(((i*w)*scr)/(scr+10-3*w)+midX,(.62*hei*scr)/(scr+10-3*w)+2*w);
+    bck.lineTo(((i*w)*scr)/(scr+10+3*w)+midX,(.62*hei*scr)/(scr+10+3*w)+2*w);
     bck.stroke();
     bck.closePath();
 }
 for (let i = -3; i<4; i++){
-    bck.moveTo(((-6*w)*scr)/(scr+10+i*2*w)+midX,(.62*hei*scr)/(scr+10+i*2*w)+4*w);
-    bck.lineTo(((6*w)*scr)/(scr+10+i*2*w)+midX,(.62*hei*scr)/(scr+10+i*2*w)+4*w);
+    bck.moveTo(((-3*w)*scr)/(scr+10+i*w)+midX,(.62*hei*scr)/(scr+10+i*w)+2*w);
+    bck.lineTo(((3*w)*scr)/(scr+10+i*w)+midX,(.62*hei*scr)/(scr+10+i*w)+2*w);
     bck.stroke();
     bck.closePath();
 }
@@ -148,8 +152,8 @@ class LT {
         this.x=0;
         this.y=0;
         this.z=scr+10;
-        this.f=[-2*w,-3*w,-w,0,-3*w,-w,0,w,-w,2*w,w,-w,2*w,3*w,-w,-2*w,3*w,-w],//front (in default position)
-        this.b=[-2*w,-3*w,w,0,-3*w,w,0,w,w,2*w,w,w,2*w,3*w,w,-2*w,3*w,w],//back
+        this.f=[-1*w,-2*w,0,0,-2*w,0,0,0,0,1*w,0,0,1*w,1*w,0,-1*w,1*w,0],//front (in default position)
+        this.b=[-1*w,-2*w,w,0,-2*w,w,0,0,w,1*w,0,w,1*w,1*w,w,-1*w,1*w,w],//back
         this.colorf="rgba(180,10,15,"+al+")",
         this.colorb="rgba(180,10,0,"+al+")",
         this.color0="rgba(230,0,45,"+al+")",
@@ -252,18 +256,18 @@ function polygon(A,color,x,y,z,M,c){
         if(c!=0){
             ctx.strokeStyle = highl;
             ctx.beginPath();
-            ctx.moveTo(((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+4*w);
-            for(let i=3; i<c.length; i+=3)ctx.lineTo(((c[i+0]+x)*scr)/(c[i+2]+z)+midX,(.62*hei*scr)/(c[i+2]+z)+4*w);
-            ctx.lineTo( ((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+4*w);
+            ctx.moveTo(((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+2*w);
+            for(let i=3; i<c.length; i+=3)ctx.lineTo(((c[i+0]+x)*scr)/(c[i+2]+z)+midX,(.62*hei*scr)/(c[i+2]+z)+2*w);
+            ctx.lineTo( ((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+2*w);
             ctx.stroke();
             ctx.closePath();
         }
 
         ctx.strokeStyle = highl;
         ctx.beginPath();
-        ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+4*w);
-        for(let i=3; i<A.length; i+=3)ctx.lineTo(((A[i+0]+x)*scr)/(A[i+2]+z)+midX,(.62*hei*scr)/(A[i+2]+z)+4*w);
-        ctx.lineTo( ((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+4*w);
+        ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+2*w);
+        for(let i=3; i<A.length; i+=3)ctx.lineTo(((A[i+0]+x)*scr)/(A[i+2]+z)+midX,(.62*hei*scr)/(A[i+2]+z)+2*w);
+        ctx.lineTo( ((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+2*w);
         ctx.stroke();
         ctx.closePath();
     }
