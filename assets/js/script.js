@@ -41,9 +41,9 @@ bck.fillRect(0,0,wid,hei);
 
 //controls
 
-let xinc=10;
-let yinc=10;
-let zinc=10;
+let xinc=1;
+let yinc=1;
+let zinc=1;
 
 let tol = .00001;
 
@@ -63,27 +63,51 @@ const con={
     yr : 0,
     zr : 0,
     xt : 0,////////////////////////////////////////////////use this to make movement incremental/////////////////////////////////////
-    yt : 0,
-    zt : 0
+    yt : 0,//follow the thing for rotation
+    zt : 0//then add collision detection 
     
 
 }
 function resp(AA,A){
-    if (con.Numpad8)A.z+= zinc;
-    if (con.Numpad2&&A.z>49)A.z-= zinc;
-    if (con.Numpad4)A.x-= xinc;
-    if (con.Numpad6)A.x+= xinc;
-    if (con.Numpad5)A.y-= yinc;
-    if (con.Numpad0) A.y+= yinc;
-    if (con.KeyZ&&con.xr==0&&con.yr==0){
+    if (con.Numpad8&&con.zt==0)con.zt+=w;
+    if (con.Numpad2&&A.z>49&&con.zt==0)con.zt-=w;
+    if (con.Numpad4&&con.xt==0)con.xt-=w;
+    if (con.Numpad6&&con.xt==0)con.xt+=w;
+    if (con.Numpad5&&con.yt==0)con.yt-=w;
+    if (con.Numpad0&&con.yt==0)con.yt+=w;
+    if (con.zt>0){
+        A.z+=zinc;
+        con.zt--;   
+    }
+    if (con.xt>0){
+        A.x+=xinc;
+        con.xt--;   
+    }
+    if (con.yt>0){
+        A.y+=yinc;
+        con.yt--;   
+    }
+    if (con.zt<0){
+        A.z-=zinc;
+        con.zt++;   
+    }
+    if (con.xt<0){
+        A.x-=xinc;
+        con.xt++;   
+    }
+    if (con.yt<0){
+        A.y-=yinc;
+        con.yt++;   
+    }
+    if (con.KeyZ&&con.xr==0&&con.yr==0&&con.zr==0){
         con.zr+=25;
         con.KeyZ = false;   
     }
-    if (con.KeyX&&con.zr==0&&con.yr==0){
+    if (con.KeyX&&con.xr==0&&con.yr==0&&con.zr==0){
         con.xr+=25;
         con.KeyX = false; 
     }
-    if (con.KeyC&&con.xr==0&&con.zr==0){
+    if (con.KeyC&&con.xr==0&&con.yr==0&&con.zr==0){
         con.yr+=25;
         con.KeyC = false; 
     }
@@ -122,8 +146,8 @@ function upkey(e){
 
 //shapes
 
-const w = 80;//size increment of blocks 
-const scr = 1.5*hei;//distance between viewer and screen
+const w = 60;//size increment of blocks 
+const scr = 1*hei;//distance between viewer and screen
 const al = .4//alpha of block sides
 
 let highl="rgba(20,20,20,1)"
@@ -133,14 +157,14 @@ bck.strokeStyle="rgb(150,150,150)";
 
 
 for (let i = -3; i<4; i++){
-    bck.moveTo(((i*w)*scr)/(scr+10-3*w)+midX,(.62*hei*scr)/(scr+10-3*w)+2*w);
-    bck.lineTo(((i*w)*scr)/(scr+10+3*w)+midX,(.62*hei*scr)/(scr+10+3*w)+2*w);
+    bck.moveTo(((i*w)*scr)/(scr+10-3*w)+midX,(1*7*w*scr)/(scr+10-3*w)+2*w);
+    bck.lineTo(((i*w)*scr)/(scr+10+3*w)+midX,(1*7*w*scr)/(scr+10+3*w)+2*w);
     bck.stroke();
     bck.closePath();
 }
 for (let i = -3; i<4; i++){
-    bck.moveTo(((-3*w)*scr)/(scr+10+i*w)+midX,(.62*hei*scr)/(scr+10+i*w)+2*w);
-    bck.lineTo(((3*w)*scr)/(scr+10+i*w)+midX,(.62*hei*scr)/(scr+10+i*w)+2*w);
+    bck.moveTo(((-3*w)*scr)/(scr+10+i*w)+midX,(1*7*w*scr)/(scr+10+i*w)+2*w);
+    bck.lineTo(((3*w)*scr)/(scr+10+i*w)+midX,(1*7*w*scr)/(scr+10+i*w)+2*w);
     bck.stroke();
     bck.closePath();
 }
@@ -246,7 +270,22 @@ function rotateZV(A,frac=50){
         A[i+1]=h*st+k*ct;
     }
 }
+/*//draw grid
+bck.strokeStyle="rgb(150,150,150)";
 
+
+for (let i = -3; i<4; i++){
+    bck.moveTo(((i*w)*scr)/(scr+10-3*w)+midX,(1*7*w*scr)/(scr+10-3*w)+2*w);
+    bck.lineTo(((i*w)*scr)/(scr+10+3*w)+midX,(1*7*w*scr)/(scr+10+3*w)+2*w);
+    bck.stroke();
+    bck.closePath();
+}
+for (let i = -3; i<4; i++){
+    bck.moveTo(((-3*w)*scr)/(scr+10+i*w)+midX,(1*7*w*scr)/(scr+10+i*w)+2*w);
+    bck.lineTo(((3*w)*scr)/(scr+10+i*w)+midX,(1*7*w*scr)/(scr+10+i*w)+2*w);
+    bck.stroke();
+    bck.closePath();
+}*/
 
 function polygon(A,color,x,y,z,M,c){
     ctx.strokeStyle = "rgba(0,0,0,0)";
@@ -256,18 +295,18 @@ function polygon(A,color,x,y,z,M,c){
         if(c!=0){
             ctx.strokeStyle = highl;
             ctx.beginPath();
-            ctx.moveTo(((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+2*w);
-            for(let i=3; i<c.length; i+=3)ctx.lineTo(((c[i+0]+x)*scr)/(c[i+2]+z)+midX,(.62*hei*scr)/(c[i+2]+z)+2*w);
-            ctx.lineTo( ((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(.62*hei*scr)/(c[0*3+2]+z)+2*w);
+            ctx.moveTo(((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(1*7*w*scr)/(c[0*3+2]+z)+2*w);
+            for(let i=3; i<c.length; i+=3)ctx.lineTo(((c[i+0]+x)*scr)/(c[i+2]+z)+midX,(1*7*w*scr)/(c[i+2]+z)+2*w);
+            ctx.lineTo( ((c[0*3+0]+x)*scr)/(c[0*3+2]+z)+midX,(1*7*w*scr)/(c[0*3+2]+z)+2*w);
             ctx.stroke();
             ctx.closePath();
         }
 
         ctx.strokeStyle = highl;
         ctx.beginPath();
-        ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+2*w);
-        for(let i=3; i<A.length; i+=3)ctx.lineTo(((A[i+0]+x)*scr)/(A[i+2]+z)+midX,(.62*hei*scr)/(A[i+2]+z)+2*w);
-        ctx.lineTo( ((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(.62*hei*scr)/(A[0*3+2]+z)+2*w);
+        ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(1*7*w*scr)/(A[0*3+2]+z)+2*w);
+        for(let i=3; i<A.length; i+=3)ctx.lineTo(((A[i+0]+x)*scr)/(A[i+2]+z)+midX,(1*7*w*scr)/(A[i+2]+z)+2*w);
+        ctx.lineTo( ((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,(1*7*w*scr)/(A[0*3+2]+z)+2*w);
         ctx.stroke();
         ctx.closePath();
     }
@@ -276,9 +315,9 @@ function polygon(A,color,x,y,z,M,c){
     if (ff==0) ctx.strokeStyle = highl; 
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,((A[0*3+1]+y)*scr)/(A[0*3+2]+z)+4*w);
-    for(let i=3; i<A.length; i+=3)ctx.lineTo(((A[i+0]+x)*scr)/(A[i+2]+z)+midX,((A[i+1]+y)*scr)/(A[i+2]+z)+4*w);
-    ctx.lineTo( ((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,((A[0*3+1]+y)*scr)/(A[0*3+2]+z)+4*w);
+    ctx.moveTo(((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,((A[0*3+1]+y)*scr)/(A[0*3+2]+z)+2*w);
+    for(let i=3; i<A.length; i+=3)ctx.lineTo(((A[i+0]+x)*scr)/(A[i+2]+z)+midX,((A[i+1]+y)*scr)/(A[i+2]+z)+2*w);
+    ctx.lineTo( ((A[0*3+0]+x)*scr)/(A[0*3+2]+z)+midX,((A[0*3+1]+y)*scr)/(A[0*3+2]+z)+2*w);
     ctx.stroke();
     ctx.fill();
     ctx.closePath();
