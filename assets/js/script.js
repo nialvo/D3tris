@@ -41,9 +41,9 @@ bck.fillRect(0,0,wid,hei);
 
 //controls
 
-let xinc=1;
-let yinc=1;
-let zinc=1;
+let xinc=10;
+let yinc=10;
+let zinc=10;
 
 let tol = .00001;
 
@@ -74,56 +74,56 @@ function resp(AA,A){
     if (con.Numpad4&&con.xt==0)con.xt-=w;
     if (con.Numpad6&&con.xt==0)con.xt+=w;
     if (con.Numpad5&&con.yt==0)con.yt-=w;
-    if (con.Numpad0&&con.yt==0)con.yt+=w;
+    if (con.Numpad0&&con.yt==0&&AA.lowest(A)+A.y<410)con.yt+=w;
     if (con.zt>0){
         A.z+=zinc;
-        con.zt--;   
+        con.zt-=zinc;   
     }
     if (con.xt>0){
         A.x+=xinc;
-        con.xt--;   
+        con.xt-=xinc;   
     }
     if (con.yt>0){
         A.y+=yinc;
-        con.yt--;   
+        con.yt-=yinc;   
     }
     if (con.zt<0){
         A.z-=zinc;
-        con.zt++;   
+        con.zt+=zinc;   
     }
     if (con.xt<0){
         A.x-=xinc;
-        con.xt++;   
+        con.xt+=xinc;   
     }
     if (con.yt<0){
         A.y-=yinc;
-        con.yt++;   
+        con.yt+=yinc;   
     }
     if (con.KeyZ&&con.xr==0&&con.yr==0&&con.zr==0){
-        con.zr+=25;
+        con.zr+=15;
         con.KeyZ = false;   
     }
     if (con.KeyX&&con.xr==0&&con.yr==0&&con.zr==0){
-        con.xr+=25;
+        con.xr+=15;
         con.KeyX = false; 
     }
     if (con.KeyC&&con.xr==0&&con.yr==0&&con.zr==0){
-        con.yr+=25;
+        con.yr+=15;
         con.KeyC = false; 
     }
     if (con.zr>0){
-        rotateZV(A.f);
-        rotateZV(A.b);
+        rotateZV(A.f,30);
+        rotateZV(A.b,30);
         con.zr--;   
     }
     if (con.xr>0){
-        rotateXV(A.f);
-        rotateXV(A.b);
+        rotateXV(A.f,30);
+        rotateXV(A.b,30);
         con.xr--; 
     }
     if (con.yr>0){
-        rotateYV(A.f);
-        rotateYV(A.b);
+        rotateYV(A.f,30);
+        rotateYV(A.b,30);
         con.yr--;
     }
 
@@ -200,7 +200,6 @@ class LT {
         else return 0;    
     }
     static draw(a){
-        //let MXXX=Math.min(a.f[0*3+2],a.f[1*3+2],a.f[2*3+2],a.f[3*3+2],a.f[4*3+2],a.f[5*3+2],a.b[0*3+2],a.b[1*3+2],a.b[2*3+2],a.b[3*3+2],a.b[4*3+2],a.b[5*3+2]);
         let M=this.lowest(a);
         let c= this.contact(a);
         polygon(a.f,a.colorf,a.x,a.y,a.z,M,c);
