@@ -3,7 +3,7 @@
 Just a little experiment in 3D projection.<br />
 Might become a 3d version of tetris one day
 
-<a href="https://nialvo.github.io/D3tris/">Link</a>
+<a href="https://nialvo.github.io/D3tris/">Link</a><br/><br/>
 Controls:<br/>
 Forward/Backward/Left/Right: Numpad 8/2/4/6<br />
 Up/Down: Numpad 5/0 <br/>
